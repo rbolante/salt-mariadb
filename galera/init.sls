@@ -27,7 +27,7 @@ mariadb-pkgs:
     - mode: 644
     - template: jinja
     - require:
-      - pkg.installed: mariadb-pkgs
+      - pkg: mariadb-pkgs
 {% endfor %}
 
 iptables:
@@ -40,7 +40,7 @@ port_{{ port }}:
     - name: iptables -I INPUT -p {{ info['protocol'] }} -m state --state NEW --dport {{ port }} -j ACCEPT
     - unless: "iptables -L | grep {{ info['name'] }} | grep ACCEPT"
     - require:
-      - pkg.installed: iptables
+      - pkg: iptables
 {% endfor %}
 
 policycoreutils-python:
@@ -50,7 +50,7 @@ policycoreutils-python:
 permissive:
   selinux.mode:
     - require:
-      - pkg.installed: policycoreutils-python
+      - pkg: policycoreutils-python
 
 rsync:
   pkg:
@@ -67,5 +67,5 @@ mysql:
       {% for port in pillar['mdb_ports'] %}
       - cmd: port_{{ port }}
       {% endfor %}
-      - pkg.installed: rsync
-      - pkg.installed: mariadb-pkgs
+      - pkg: rsync
+      - pkg: mariadb-pkgs
